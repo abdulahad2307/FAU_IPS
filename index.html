@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IPS Exam Trainer · Integrated Production Systems</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#141821;
+  --ink-soft:#3a4150;
+  --paper:#eef0ec;
+  --panel:#f7f8f5;
+  --line:#c9cdc3;
+  --line-strong:#a7ad9f;
+  --steel:#2b5d7d;
+  --steel-deep:#1d4258;
+  --go:#1f9e5a;
+  --go-soft:#e2f2e8;
+  --warn:#e0920f;
+  --warn-soft:#f8eed6;
+  --stop:#cf3b28;
+  --stop-soft:#f7e2de;
+  --grey-dot:#b7bcb0;
+  --shadow:0 1px 0 rgba(20,24,33,.04), 0 2px 8px rgba(20,24,33,.06);
+  --radius:3px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:'Inter',system-ui,sans-serif;
+  color:var(--ink);
+  background:var(--paper);
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:26px 26px;
+  background-position:-1px -1px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+.mono{font-family:'IBM Plex Mono',monospace}
+button{font-family:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--steel);outline-offset:2px}
+
+/* ---------- shell ---------- */
+.wrap{max-width:880px;margin:0 auto;padding:0 20px 80px}
+.topbar{
+  max-width:880px;margin:0 auto;padding:22px 20px 18px;
+  display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;
+}
+.brand{display:flex;align-items:center;gap:14px}
+.andon-lamp{width:14px;height:14px;border-radius:50%;background:var(--go);box-shadow:0 0 0 3px rgba(31,158,90,.18);animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+@media (prefers-reduced-motion:reduce){.andon-lamp{animation:none}}
+.brand h1{font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:700;letter-spacing:-.01em;margin:0;line-height:1.1}
+.brand .sub{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);margin-top:2px}
+.topbar .meta{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);text-align:right}
+
+/* ---------- panel primitive ---------- */
+.panel{
+  background:var(--panel);border:1px solid var(--line-strong);border-radius:var(--radius);
+  box-shadow:var(--shadow);
+}
+.panel-head{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 18px;border-bottom:1px solid var(--line);
+  font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);
+}
+.panel-head .tag{margin-left:auto;color:var(--steel);font-weight:600}
+.panel-body{padding:20px 22px}
+
+/* ---------- start / control panel ---------- */
+.hero{margin-top:8px}
+.hero .intro{padding:26px 26px 8px}
+.hero .kicker{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--steel);margin-bottom:14px}
+.hero h2{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:31px;line-height:1.08;letter-spacing:-.02em;margin:0 0 12px}
+.hero p{margin:0 0 4px;color:var(--ink-soft);font-size:15px;max-width:60ch}
+
+.order{margin-top:22px}
+.field{padding:18px 22px;border-bottom:1px solid var(--line)}
+.field:last-child{border-bottom:none}
+.field .flabel{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:11px;display:flex;align-items:baseline;gap:8px}
+.field .flabel .idx{color:var(--steel);font-weight:600}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.chip{
+  border:1px solid var(--line-strong);background:#fff;border-radius:var(--radius);
+  padding:9px 15px;font-size:13.5px;font-weight:500;color:var(--ink);
+  display:inline-flex;align-items:center;gap:8px;transition:all .12s ease;
+}
+.chip:hover{border-color:var(--steel);background:var(--panel)}
+.chip[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.chip .n{font-family:'IBM Plex Mono',monospace;font-size:11px;opacity:.6}
+.chip[aria-pressed="true"] .n{opacity:.7}
+.chip .andon-mini{width:8px;height:8px;border-radius:50%}
+
+.launch{padding:22px}
+.btn{
+  border:1px solid var(--ink);border-radius:var(--radius);font-weight:600;font-size:14px;
+  padding:13px 24px;background:var(--ink);color:#fff;transition:transform .08s ease,background .15s ease;
+  font-family:'Space Grotesk',sans-serif;letter-spacing:.01em;
+}
+.btn:hover{background:#000}
+.btn:active{transform:translateY(1px)}
+.btn.block{width:100%}
+.btn.ghost{background:#fff;color:var(--ink)}
+.btn.ghost:hover{background:var(--panel)}
+.btn.steel{background:var(--steel);border-color:var(--steel)}
+.btn.steel:hover{background:var(--steel-deep)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.sm{padding:9px 16px;font-size:12.5px}
+
+.hint{font-size:12.5px;color:var(--ink-soft);margin-top:12px}
+.hint code{background:var(--paper);border:1px solid var(--line);border-radius:2px;padding:1px 5px;font-size:11.5px}
+
+/* ---------- exam ---------- */
+.exam-top{display:flex;align-items:center;gap:14px;margin:6px 0 18px}
+.progress-track{flex:1;height:8px;background:var(--panel);border:1px solid var(--line-strong);border-radius:20px;overflow:hidden}
+.progress-fill{height:100%;background:repeating-linear-gradient(45deg,var(--steel),var(--steel) 8px,var(--steel-deep) 8px,var(--steel-deep) 16px);transition:width .35s cubic-bezier(.2,.7,.2,1);width:0}
+.progress-label{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-soft);white-space:nowrap}
+
+.qcard{position:relative}
+.qmeta{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.badge{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:20px;border:1px solid var(--line-strong);color:var(--ink-soft);background:#fff}
+.badge.type{color:var(--steel);border-color:var(--steel)}
+.badge.calc{color:var(--warn);border-color:var(--warn)}
+.badge.mcq{color:var(--go);border-color:var(--go)}
+.qprompt{font-size:18.5px;line-height:1.5;margin:16px 0 4px;font-weight:500}
+.qprompt strong{font-weight:700}
+.given{background:var(--paper);border:1px dashed var(--line-strong);border-radius:var(--radius);padding:14px 16px;margin:16px 0 4px;font-size:14px}
+.given .gtitle{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:8px}
+.given ul{margin:0;padding-left:18px}
+.given li{margin:3px 0}
+
+textarea.answer{
+  width:100%;min-height:150px;margin-top:18px;resize:vertical;
+  border:1px solid var(--line-strong);border-radius:var(--radius);padding:14px 15px;
+  font-family:'Inter',sans-serif;font-size:14.5px;line-height:1.6;color:var(--ink);background:#fff;
+}
+input.numin{
+  width:100%;margin-top:18px;border:1px solid var(--line-strong);border-radius:var(--radius);
+  padding:13px 15px;font-family:'IBM Plex Mono',monospace;font-size:15px;background:#fff;color:var(--ink);
+}
+.mcq-list{margin-top:18px;display:flex;flex-direction:column;gap:9px}
+.mcq-opt{
+  display:flex;align-items:flex-start;gap:12px;text-align:left;
+  border:1px solid var(--line-strong);background:#fff;border-radius:var(--radius);
+  padding:13px 15px;font-size:14.5px;color:var(--ink);transition:all .12s ease;width:100%;
+}
+.mcq-opt:hover{border-color:var(--steel);background:var(--panel)}
+.mcq-opt[aria-pressed="true"]{border-color:var(--ink);background:var(--panel);box-shadow:inset 0 0 0 1px var(--ink)}
+.mcq-opt .key{font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--steel);flex-shrink:0}
+.mcq-opt.correct{border-color:var(--go);background:var(--go-soft)}
+.mcq-opt.wrong{border-color:var(--stop);background:var(--stop-soft)}
+
+.exam-actions{display:flex;gap:10px;margin-top:20px;align-items:center;flex-wrap:wrap}
+.exam-actions .spacer{flex:1}
+
+/* ---------- reveal / grading ---------- */
+.reveal{margin-top:18px;border-top:1px solid var(--line);padding-top:18px}
+.reveal h4{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);margin:0 0 10px;display:flex;align-items:center;gap:8px}
+.model{font-size:14.5px;line-height:1.62}
+.model p{margin:0 0 10px}
+.rubric{list-style:none;padding:0;margin:14px 0 0}
+.rubric li{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.rubric li:last-child{border-bottom:none}
+.rubric .mark{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--line-strong);flex-shrink:0;margin-top:3px}
+.worked{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:15px 17px;margin-top:6px;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;white-space:pre-wrap}
+.answer-line{color:var(--go);font-weight:600}
+
+.selfgrade{margin-top:20px}
+.selfgrade .sg-q{font-size:13px;color:var(--ink-soft);margin-bottom:10px;font-family:'IBM Plex Mono',monospace;letter-spacing:.05em;text-transform:uppercase}
+.sg-btns{display:flex;gap:8px;flex-wrap:wrap}
+.sg{border:1px solid var(--line-strong);background:#fff;border-radius:var(--radius);padding:10px 16px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:9px;color:var(--ink)}
+.sg .dot{width:10px;height:10px;border-radius:50%}
+.sg.got .dot{background:var(--go)}
+.sg.part .dot{background:var(--warn)}
+.sg.miss .dot{background:var(--stop)}
+.sg[aria-pressed="true"].got{background:var(--go-soft);border-color:var(--go)}
+.sg[aria-pressed="true"].part{background:var(--warn-soft);border-color:var(--warn)}
+.sg[aria-pressed="true"].miss{background:var(--stop-soft);border-color:var(--stop)}
+
+.ai-box{margin-top:16px;border:1px solid var(--line);border-radius:var(--radius);background:#fff;padding:0;overflow:hidden}
+.ai-box .aihd{padding:10px 14px;background:var(--panel);border-bottom:1px solid var(--line);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);display:flex;align-items:center;gap:8px}
+.ai-box .aibody{padding:14px;font-size:14px;line-height:1.6;white-space:pre-wrap}
+.ai-score{font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--steel)}
+
+/* ---------- results ---------- */
+.result-hero{text-align:center;padding:34px 22px 26px}
+.result-hero .big{font-family:'Space Grotesk',sans-serif;font-size:64px;font-weight:700;line-height:1;letter-spacing:-.03em}
+.result-hero .oee-label{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft);margin-top:10px}
+.result-verdict{font-size:15px;color:var(--ink-soft);margin-top:14px;max-width:52ch;margin-left:auto;margin-right:auto}
+
+.andon-board{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line-strong);border-radius:var(--radius);overflow:hidden}
+.andon-cell{background:var(--panel);padding:13px 14px;display:flex;flex-direction:column;gap:8px;min-height:74px}
+.andon-cell .u{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.08em;color:var(--ink-soft)}
+.andon-cell .name{font-size:12.5px;font-weight:600;line-height:1.25}
+.andon-cell .lamp{width:12px;height:12px;border-radius:50%;background:var(--grey-dot);margin-top:auto}
+.andon-cell.go .lamp{background:var(--go);box-shadow:0 0 0 3px var(--go-soft)}
+.andon-cell.warn .lamp{background:var(--warn);box-shadow:0 0 0 3px var(--warn-soft)}
+.andon-cell.stop .lamp{background:var(--stop);box-shadow:0 0 0 3px var(--stop-soft)}
+.andon-legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px;font-size:12px;color:var(--ink-soft)}
+.andon-legend span{display:inline-flex;align-items:center;gap:7px}
+.andon-legend .l{width:10px;height:10px;border-radius:50%}
+
+.review-item{border:1px solid var(--line);border-radius:var(--radius);margin-top:10px;overflow:hidden}
+.review-item .rhd{display:flex;gap:10px;align-items:center;padding:11px 14px;background:var(--panel);font-size:13.5px;cursor:pointer}
+.review-item .rhd .rlamp{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.review-item .rhd .rq{flex:1;font-weight:500}
+.review-item .rbody{padding:14px;border-top:1px solid var(--line);font-size:14px;display:none}
+.review-item.open .rbody{display:block}
+
+.footer{margin-top:32px;text-align:center;font-size:11.5px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;letter-spacing:.05em}
+.footer a{color:var(--steel)}
+
+.hidden{display:none!important}
+.stack>*+*{margin-top:20px}
+
+/* modal */
+.modal-bg{position:fixed;inset:0;background:rgba(20,24,33,.5);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50}
+.modal{max-width:440px;width:100%}
+.modal input{width:100%;border:1px solid var(--line-strong);border-radius:var(--radius);padding:11px 13px;font-family:'IBM Plex Mono',monospace;font-size:13px;margin-top:6px}
+.modal label{font-size:12px;font-family:'IBM Plex Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+.modal .row{display:flex;gap:10px;margin-top:18px}
+
+@media(max-width:560px){
+  .hero h2{font-size:25px}
+  .result-hero .big{font-size:52px}
+  .panel-body{padding:16px}
+  .topbar .meta{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <span class="andon-lamp" id="statusLamp"></span>
+    <div>
+      <h1>IPS Exam Trainer</h1>
+      <div class="sub">Integrated Production Systems</div>
+    </div>
+  </div>
+  <div class="meta" id="topMeta">FAPS · FAU Erlangen-Nürnberg</div>
+</div>
+
+<div class="wrap">
+
+  <!-- ============ START SCREEN ============ -->
+  <section id="screen-start">
+    <div class="panel hero">
+      <div class="intro">
+        <div class="kicker">Production order · configure your run</div>
+        <h2>Train like the line runs:<br>one takt at a time.</h2>
+        <p>Practice questions built from the lecture's own mock questions, the case-study calculations, and the master glossary. Answer, reveal the model answer &amp; rubric, then light up your andon board. Fully offline. No account, no cost.</p>
+      </div>
+
+      <div class="order">
+        <div class="field">
+          <div class="flabel"><span class="idx">01</span> Mode</div>
+          <div class="opts" id="modeOpts">
+            <button class="chip" data-mode="mixed" aria-pressed="true">Full mock exam <span class="n">mixed</span></button>
+            <button class="chip" data-mode="calc" aria-pressed="false">Calculation drills <span class="n">OEE · Cp/Cpk</span></button>
+            <button class="chip" data-mode="mcq" aria-pressed="false">Quick-fire <span class="n">MCQ only</span></button>
+            <button class="chip" data-mode="written" aria-pressed="false">Written answers <span class="n">explain</span></button>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="flabel"><span class="idx">02</span> Difficulty</div>
+          <div class="opts" id="diffOpts">
+            <button class="chip" data-diff="all" aria-pressed="true">All levels</button>
+            <button class="chip" data-diff="basic" aria-pressed="false"><span class="andon-mini" style="background:var(--go)"></span>Basic</button>
+            <button class="chip" data-diff="intermediate" aria-pressed="false"><span class="andon-mini" style="background:var(--warn)"></span>Intermediate</button>
+            <button class="chip" data-diff="advanced" aria-pressed="false"><span class="andon-mini" style="background:var(--stop)"></span>Advanced</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="flabel"><span class="idx">03</span> Length</div>
+          <div class="opts" id="lenOpts">
+            <button class="chip" data-len="5" aria-pressed="false">5 questions</button>
+            <button class="chip" data-len="10" aria-pressed="true">10 questions</button>
+            <button class="chip" data-len="20" aria-pressed="false">20 questions</button>
+            <button class="chip" data-len="0" aria-pressed="false">Everything</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="launch">
+        <button class="btn block" id="startBtn">Start run →</button>
+        <div class="hint">
+          Grading is <strong>self-scored</strong> against a model answer + rubric — the way that actually helps you learn.
+          Optional AI grading is available if you add your own key. <button class="btn ghost sm" id="aiSetupBtn" style="margin-left:6px">Set up AI grading</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:20px" id="lastRunPanel" hidden>
+      <div class="panel-head">Last session <span class="tag" id="lastRunTag"></span></div>
+      <div class="panel-body" id="lastRunBody"></div>
+    </div>
+
+    <div class="footer">
+      Question bank v1 · <span id="qcount"></span> items · terms kept exactly as in the course ·
+      <a href="IPS_Study_Notes.md">study notes</a>
+    </div>
+  </section>
+
+  <!-- ============ EXAM SCREEN ============ -->
+  <section id="screen-exam" class="hidden">
+    <div class="exam-top">
+      <button class="btn ghost sm" id="quitBtn">✕ Quit</button>
+      <div class="progress-track"><div class="progress-fill" id="progFill"></div></div>
+      <div class="progress-label" id="progLabel">01 / 10</div>
+    </div>
+
+    <div class="panel qcard">
+      <div class="panel-head">
+        <span id="qUnitLabel">UNIT —</span>
+        <span class="tag" id="qScore"></span>
+      </div>
+      <div class="panel-body" id="qBody"><!-- injected --></div>
+    </div>
+  </section>
+
+  <!-- ============ RESULTS SCREEN ============ -->
+  <section id="screen-results" class="hidden">
+    <div class="panel">
+      <div class="panel-head">Run complete <span class="tag" id="resTag"></span></div>
+      <div class="result-hero">
+        <div class="big" id="resScore">—%</div>
+        <div class="oee-label">Overall readiness</div>
+        <div class="result-verdict" id="resVerdict"></div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:20px">
+      <div class="panel-head">Andon board · readiness by topic</div>
+      <div class="panel-body">
+        <div class="andon-board" id="andonBoard"></div>
+        <div class="andon-legend">
+          <span><span class="l" style="background:var(--go)"></span> Ready (≥80%)</span>
+          <span><span class="l" style="background:var(--warn)"></span> Review (50–79%)</span>
+          <span><span class="l" style="background:var(--stop)"></span> Weak (&lt;50%)</span>
+          <span><span class="l" style="background:var(--grey-dot)"></span> Not tested</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:20px">
+      <div class="panel-head">Review · every question</div>
+      <div class="panel-body" id="reviewList"></div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:22px;flex-wrap:wrap">
+      <button class="btn steel" id="againBtn">Run again →</button>
+      <button class="btn ghost" id="homeBtn">Back to setup</button>
+    </div>
+    <div class="footer">Scores are saved locally in this browser only. Nothing leaves your machine.</div>
+  </section>
+
+</div>
+
+<!-- AI key modal -->
+<div class="modal-bg hidden" id="aiModal">
+  <div class="panel modal">
+    <div class="panel-head">Optional · AI grading <span class="tag">local only</span></div>
+    <div class="panel-body">
+      <p style="font-size:13.5px;color:var(--ink-soft);margin-top:0">
+        Paste an Anthropic API key to let Claude grade your written answers. The key is stored
+        <strong>only in this browser</strong> (never uploaded, never committed to GitHub). Leave blank to just self-grade — that works fully without any key.
+      </p>
+      <label for="keyInput">Anthropic API key (starts with sk-ant-)</label>
+      <input id="keyInput" type="password" placeholder="sk-ant-..." autocomplete="off">
+      <p style="font-size:12px;color:var(--ink-soft);margin-top:10px">
+        Get one at <span class="mono">console.anthropic.com</span>. Uses your own free credit. Calculations &amp; MCQs are graded automatically without any key.
+      </p>
+      <div class="row">
+        <button class="btn steel" id="saveKey">Save key</button>
+        <button class="btn ghost" id="clearKey">Remove key</button>
+        <button class="btn ghost" id="closeModal" style="margin-left:auto">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   IPS Exam Trainer — QUESTION BANK
+   ------------------------------------------------------------
+   Integrated Production Systems (FAPS, FAU Erlangen-Nürnberg)
+   Terms kept EXACTLY as used in the lecture.
+
+   To add your own question, copy one block and edit it.
+   Fields:
+     unit / unitKey / unitName / topic  -> labels & andon board
+     type: "written" | "mcq" | "calc"
+     diff: "basic" | "intermediate" | "advanced"
+   written -> model (HTML), rubric [ ... ]
+   mcq     -> options [...], answer (index 0-based), explain (HTML)
+   calc    -> given (HTML), answer (number), tol, answerText, worked (text)
+   ============================================================ */
+window.IPS_QUESTIONS = [
+
+/* ================= UNIT 1 — HISTORY ================= */
+{
+  unit:"UNIT 01 · History", unitKey:"01", unitName:"History of IPS", topic:"Progression",
+  type:"mcq", diff:"basic",
+  prompt:"Which sequence correctly orders the historical development of production systems?",
+  promptText:"Order the historical development of production systems.",
+  options:[
+    "Handcraft → Ford → Taylor → Toyota/Lean",
+    "Handcraft → Manufactory → Taylor → Ford → Toyota/Lean",
+    "Taylor → Handcraft → Ford → Manufactory → Toyota",
+    "Ford → Taylor → Toyota → Handcraft → Manufactory"
+  ],
+  answer:1,
+  explain:"<p>The progression is <strong>Handcraft (manufacture) → Manufactory → Taylor (scientific management) → Ford (line production) → Toyota / Lean (Ohno)</strong>. Each stage solves a problem of the one before it: Taylor splits planning from execution, Ford introduces the moving line, and Toyota overcomes the rigidity of mass production with flow + pull.</p>"
+},
+{
+  unit:"UNIT 01 · History", unitKey:"01", unitName:"History of IPS", topic:"Ford",
+  type:"mcq", diff:"basic",
+  prompt:"What was the central <strong>weakness</strong> of Ford's rigid line production?",
+  promptText:"Central weakness of Ford's line production.",
+  options:[
+    "It required highly skilled craftspeople for every station",
+    "A single interruption at one station blocks the entire line; no product variety",
+    "It produced too many variants to be profitable",
+    "It relied on pull control and Kanban"
+  ],
+  answer:1,
+  explain:"<p>Ford's line massively cut cost (the Model T fell from about <strong>$1300 to $290</strong>) but it was <strong>rigid</strong>: <strong>one interruption blocks the whole line</strong>, and it offered essentially <strong>no variety</strong> ('any colour so long as it is black'). Toyota/Lean later kept the flow but added flexibility.</p>"
+},
+{
+  unit:"UNIT 01 · History", unitKey:"01", unitName:"History of IPS", topic:"Taylor & Ford",
+  type:"written", diff:"intermediate",
+  prompt:"Name the main stages in the history of production systems and give <strong>one key characteristic or limitation</strong> of Taylorism and of Ford's line production.",
+  promptText:"Name the historical stages; give a key characteristic/limitation of Taylorism and Ford's line production.",
+  model:"<p><strong>Stages:</strong> Handcraft (manufacture) → Manufactory → <strong>Taylor</strong> (scientific management) → <strong>Ford</strong> (line production) → <strong>Toyota / Lean Production</strong> (Taiichi Ohno).</p><p><strong>Taylorism:</strong> strict separation of <em>planning</em> from <em>execution</em>; work broken into smallest steps; the search for the <em>one best way</em>. Limitation: dehumanising, ignores worker knowledge, inflexible.</p><p><strong>Ford's line production:</strong> the moving assembly line drastically lowered unit cost (Model T ≈ $1300 → $290). Limitation: extremely <em>rigid</em> — a single interruption blocks the entire line and there is essentially <em>no product variety</em>.</p><p>Toyota/Lean overcomes these by combining flow with flexibility, pull control and continuous improvement, and eventually overtook mass-producers such as GM.</p>",
+  rubric:[
+    "Lists the stages in correct order (Handcraft → Manufactory → Taylor → Ford → Toyota/Lean)",
+    "Taylor: planning/execution split + 'one best way'",
+    "Ford: moving line lowers cost BUT rigid — one interruption blocks all, no variety",
+    "Mentions Toyota/Lean (Ohno) as the resolution"
+  ]
+},
+
+/* ================= UNIT 2 — STRUCTURE / HOUSE ================= */
+{
+  unit:"UNIT 02 · Structure", unitKey:"02", unitName:"IPS House", topic:"The House",
+  type:"mcq", diff:"basic",
+  prompt:"In the IPS 'House', what do the <strong>roof</strong>, <strong>pillars</strong> and <strong>foundation</strong> represent?",
+  promptText:"What do the roof, pillars and foundation of the IPS House represent?",
+  options:[
+    "Roof = tools, pillars = costs, foundation = customers",
+    "Roof = overarching goals, pillars = topic areas, foundation = stability",
+    "Roof = suppliers, pillars = machines, foundation = profit",
+    "Roof = Kanban, pillars = Kaizen, foundation = Ford"
+  ],
+  answer:1,
+  explain:"<p><strong>Roof = the overarching goals</strong> (lowest cost, highest quality, shortest lead time, highest safety). <strong>Pillars = the topic areas / methods</strong> (equally important). <strong>Foundation = stability</strong> (standardisation, order). Each pillar has <strong>3 levels: principle → method → tool</strong>.</p>"
+},
+{
+  unit:"UNIT 02 · Structure", unitKey:"02", unitName:"IPS House", topic:"Elements & conflicts",
+  type:"written", diff:"advanced",
+  prompt:"Name several <strong>key elements of an IPS</strong> and explain the <strong>potential goal conflicts</strong> that arise if they are implemented in isolation. <span style='color:var(--steel)'>(Lecturer mock question)</span>",
+  promptText:"Name key elements of an IPS and explain goal conflicts if implemented in isolation.",
+  model:"<p><strong>Key elements</strong> (bricks of the house): waste elimination, process orientation / flow (JIT), continuous improvement (CIP/Kaizen), pull control (Kanban), Heijunka (levelling), TQM, TPM, standardisation, Jidoka, and the supporting culture/employees.</p><p><strong>Why isolation causes conflict:</strong> an IPS is <em>integrated</em> — the elements only work because they reinforce one another. In isolation they collide:</p><ul><li><strong>Pull/JIT without Heijunka</strong> → uneven demand starves or floods the pull loops (Mura).</li><li><strong>Waste elimination / low stock without stable quality (TQM/Jidoka)</strong> → one defect stops the whole flow; no buffer to absorb it.</li><li><strong>High utilisation without maintenance (TPM)</strong> → breakdowns destroy availability.</li><li><strong>Kaizen without standardisation (SDCA)</strong> → improvements are not held; gains slide back.</li></ul><p><strong>Key rule:</strong> an IPS can only exist if every element is strong enough and coincides with the others.</p>",
+  rubric:[
+    "Names several genuine IPS elements (waste elimination, flow/JIT, CIP, Kanban, Heijunka, TQM, TPM, standardisation…)",
+    "States the integration idea: elements reinforce each other",
+    "Gives concrete conflict(s), e.g. JIT without Heijunka, low stock without stable quality",
+    "Concludes: IPS works only if every element is strong AND coincides with the others"
+  ]
+},
+{
+  unit:"UNIT 02 · Structure", unitKey:"02", unitName:"IPS House", topic:"Activity classes",
+  type:"written", diff:"intermediate",
+  prompt:"The IPS House divides activities into <strong>waste / value-adding / additional work</strong>. Explain why each is necessary and give a <strong>practical example</strong> of each. <span style='color:var(--steel)'>(Lecturer mock question)</span>",
+  promptText:"Explain waste / value-adding / additional work; why each exists; example of each.",
+  model:"<p><strong>Value-adding activity:</strong> directly transforms the product toward what the customer pays for. <em>Example:</em> welding, assembling, machining a part.</p><p><strong>Additional work (necessary non-value-adding):</strong> does not add value itself but is currently required to enable value creation. <em>Example:</em> clamping a part, changing a tool (setup), quality inspection, transport that cannot yet be removed.</p><p><strong>Waste (Muda):</strong> consumes resources without adding value <em>and</em> is not currently necessary — the target for elimination. <em>Example:</em> overproduction, waiting, unnecessary motion, excess inventory, rework.</p><p>The point: you cannot eliminate everything at once. You <strong>eliminate waste</strong>, <strong>minimise additional work</strong> (e.g. SMED shrinks setup), and <strong>maximise value-adding time</strong>. This ties to the <strong>3 MU: Muda (waste), Muri (overload), Mura (unevenness)</strong>.</p>",
+  rubric:[
+    "Value-adding = transforms product toward customer value (example)",
+    "Additional work = non-value-adding but currently necessary (example: setup/inspection)",
+    "Waste (Muda) = no value, not necessary → eliminate (example: overproduction/waiting)",
+    "Strategy: eliminate waste, minimise additional work, maximise value-adding; links to 3 MU"
+  ]
+},
+{
+  unit:"UNIT 02 · Structure", unitKey:"02", unitName:"IPS House", topic:"Classify tasks",
+  type:"written", diff:"intermediate",
+  prompt:"Take a <strong>daily office task of an engineer</strong> and classify its activities into <strong>waste / value-adding / additional work</strong>. <span style='color:var(--steel)'>(Lecturer mock question)</span>",
+  promptText:"Classify an engineer's daily office task into waste / value-adding / additional work.",
+  model:"<p><em>Example task: preparing a design report.</em></p><p><strong>Value-adding:</strong> actually creating the design / writing the technical content the customer or project needs.</p><p><strong>Additional work (necessary):</strong> opening and formatting the template, saving to the correct server, a required review/approval step, searching a standard you must cite.</p><p><strong>Waste (Muda):</strong> waiting for a slow file to load, redoing work because the brief was unclear, hunting for a file that was mis-filed, unnecessary status meetings, duplicated data entry.</p><p>Good answers pick <em>any</em> realistic office task and correctly sort concrete sub-activities — the classification logic matters more than the specific task.</p>",
+  rubric:[
+    "Picks a concrete engineer's office task",
+    "Correctly identifies a value-adding sub-activity (the actual creation)",
+    "Correctly identifies additional/necessary work (formatting, approval, filing)",
+    "Correctly identifies waste (waiting, searching, rework, duplicate entry)"
+  ]
+},
+
+/* ================= UNIT 3 — CIP / KAIZEN ================= */
+{
+  unit:"UNIT 03 · CIP", unitKey:"03", unitName:"CIP / Kaizen", topic:"Kaizen vs Kaikaku",
+  type:"mcq", diff:"basic",
+  prompt:"What is the difference between <strong>Kaizen</strong> and <strong>Kaikaku</strong>?",
+  promptText:"Difference between Kaizen and Kaikaku.",
+  options:[
+    "Kaizen = radical one-off change; Kaikaku = small daily change",
+    "Kaizen = small continuous improvement; Kaikaku = radical / large-scale change",
+    "They are two words for exactly the same thing",
+    "Kaizen is a tool; Kaikaku is a KPI"
+  ],
+  answer:1,
+  explain:"<p><strong>Kaizen</strong> (改善, <em>kai</em>=change, <em>zen</em>=good) means <strong>small, continuous improvement</strong> by everyone, every day. <strong>Kaikaku</strong> is <strong>radical, large-scale change</strong> (re-engineering / breakthrough). Lean uses mostly Kaizen, with occasional Kaikaku steps.</p>"
+},
+{
+  unit:"UNIT 03 · CIP", unitKey:"03", unitName:"CIP / Kaizen", topic:"PDCA vs SDCA",
+  type:"mcq", diff:"intermediate",
+  prompt:"In CIP, what is the role of <strong>PDCA</strong> versus <strong>SDCA</strong>?",
+  promptText:"Role of PDCA versus SDCA in CIP.",
+  options:[
+    "PDCA holds the standard; SDCA improves it",
+    "PDCA improves (Plan-Do-Check-Act); SDCA holds the gain (Standardize-Do-Check-Act)",
+    "Both only apply to maintenance",
+    "PDCA is a Toyota tool; SDCA is a Ford tool"
+  ],
+  answer:1,
+  explain:"<p><strong>PDCA</strong> (Plan–Do–Check–Act, Deming) is the <strong>improvement</strong> cycle. <strong>SDCA</strong> (Standardize–Do–Check–Act) <strong>locks in the gain</strong> so the process does not slide back. You alternate: improve (PDCA), then standardise (SDCA), then improve again.</p>"
+},
+{
+  unit:"UNIT 03 · CIP", unitKey:"03", unitName:"CIP / Kaizen", topic:"Principles + Kaizen",
+  type:"written", diff:"intermediate",
+  prompt:"What are the <strong>basic principles of CIP</strong>, and how does <strong>Kaizen</strong> relate to it? <span style='color:var(--steel)'>(Lecturer mock question)</span>",
+  promptText:"Basic principles of CIP and how Kaizen relates.",
+  model:"<p><strong>CIP (Continuous Improvement Process)</strong> is one of the three core principles of lean. Its basic ideas: improvement is <strong>continuous and incremental</strong>, driven <strong>by everyone</strong> (not just management), based on <strong>facts observed at the Gemba</strong> (the real place), following the <strong>PDCA</strong> cycle and secured by <strong>SDCA (standardisation)</strong>, always <strong>pursuing perfection</strong> (zero waste, zero defects).</p><p><strong>Kaizen</strong> is essentially CIP in practice — the philosophy of <em>small, continuous change for the better</em> by everyone, every day. CIP is the principle; Kaizen is its cultural/operational form. Larger, radical steps are <strong>Kaikaku</strong>.</p>",
+  rubric:[
+    "CIP is continuous, incremental, everyone-driven",
+    "Fact-based / Gemba; uses PDCA and secures via SDCA/standardisation",
+    "Pursues perfection (zero waste/defects)",
+    "Kaizen = CIP as a daily 'change for the better' philosophy (Kaikaku = radical)"
+  ]
+},
+{
+  unit:"UNIT 03 · CIP", unitKey:"03", unitName:"CIP / Kaizen", topic:"CIP tools",
+  type:"written", diff:"intermediate",
+  prompt:"Which <strong>methods/tools</strong> are used in CIP to identify improvements? Describe at least <strong>three</strong> (e.g. Ishikawa …). <span style='color:var(--steel)'>(Lecturer mock question)</span>",
+  promptText:"Describe at least three CIP tools used to identify improvements.",
+  model:"<p><strong>1. Ishikawa (fishbone / cause–effect) diagram:</strong> structures possible causes of a problem along the <strong>6M</strong> (Man, Machine, Material, Method, Measurement, Milieu/Environment) to find root causes.</p><p><strong>2. Pareto analysis (80/20):</strong> ranks causes/problems by impact so effort targets the vital few; extends into <strong>ABC</strong> and <strong>ABC-XYZ</strong> analysis.</p><p><strong>3. 5-Why:</strong> asks 'why' repeatedly (~5×) to drill from a symptom to the true root cause.</p><p><strong>4. Value Stream Mapping (VSM):</strong> maps material + information flow to expose waste and design a future state.</p><p><strong>5. A3 report:</strong> one-sheet PDCA problem-solving format (Toyota), ~8 sections.</p><p>Any three, correctly described, earn full marks — Ishikawa, Pareto, 5-Why, VSM, A3, Makigami/Process Mapping.</p>",
+  rubric:[
+    "Names ≥3 genuine CIP tools",
+    "Ishikawa correctly tied to 6M cause analysis",
+    "Pareto correctly tied to 80/20 (or ABC)",
+    "A third tool correctly described (5-Why / VSM / A3)"
+  ]
+},
+{
+  unit:"UNIT 03 · CIP", unitKey:"03", unitName:"CIP / Kaizen", topic:"Ishikawa 6M",
+  type:"mcq", diff:"basic",
+  prompt:"The Ishikawa diagram organises causes along the <strong>6M</strong>. Which set is correct?",
+  promptText:"Which set is the 6M of the Ishikawa diagram?",
+  options:[
+    "Money, Market, Machine, Method, Man, Material",
+    "Man, Machine, Material, Method, Measurement, Milieu (Environment)",
+    "Make, Move, Measure, Model, Method, Man",
+    "Muda, Muri, Mura, Man, Machine, Method"
+  ],
+  answer:1,
+  explain:"<p>The <strong>6M</strong> are <strong>Man, Machine, Material, Method, Measurement, Milieu (Environment)</strong>. They give the fishbone its main 'bones' so a team searches every category of cause, not just the obvious one.</p>"
+},
+{
+  unit:"UNIT 03 · CIP", unitKey:"03", unitName:"CIP / Kaizen", topic:"VSM steps",
+  type:"written", diff:"advanced",
+  prompt:"Explain the steps of creating a <strong>Value Stream Map</strong>: what data is collected in each phase, and how a <strong>future state</strong> is developed. <span style='color:var(--steel)'>(Lecturer mock question)</span>",
+  promptText:"Explain VSM steps, data per phase, and how the future state is developed.",
+  model:"<p><strong>VSM has four phases:</strong></p><p><strong>1. Product family selection (PQR analysis):</strong> group products by process similarity/quantity; pick the family to map first.</p><p><strong>2. Current-state map:</strong> walk the Gemba and record real data per process — cycle time, changeover/setup time, uptime, number of operators, batch sizes, inventory between steps — plus the <strong>information flow</strong> (how each step knows what to make) and the timeline (value-adding vs lead time).</p><p><strong>3. Future-state design:</strong> apply lean rules — produce to <strong>takt</strong>, introduce continuous <strong>flow</strong> where possible, use <strong>pull/supermarkets (Kanban)</strong> where flow is not possible, level the mix (<strong>Heijunka</strong>), and pick one pacemaker process. Remove the waste the current map exposed (waiting, inventory, overproduction).</p><p><strong>4. Action / implementation plan:</strong> break the future state into kaizen loops with owners and dates; then re-map (CIP).</p>",
+  rubric:[
+    "Phase 1: select product family (PQR analysis)",
+    "Phase 2: current-state map with real data (cycle time, setup, inventory, operators) + information flow + timeline",
+    "Phase 3: future state via takt, flow, pull/Kanban, Heijunka, pacemaker",
+    "Phase 4: action/implementation plan, then repeat (CIP)"
+  ]
+},
+{
+  unit:"UNIT 03 · CIP", unitKey:"03", unitName:"CIP / Kaizen", topic:"Barriers",
+  type:"written", diff:"intermediate",
+  prompt:"What <strong>barriers</strong> hinder the implementation of CIP? <span style='color:var(--steel)'>(Lecturer mock question)</span>",
+  promptText:"Barriers that hinder CIP implementation.",
+  model:"<p>Typical barriers to CIP:</p><ul><li><strong>Lack of management commitment</strong> / no time or resources allocated for improvement.</li><li><strong>Fear and resistance to change</strong> ('we've always done it this way'); worry that improvements cost jobs.</li><li><strong>No standardisation</strong> — gains are not held (missing SDCA), so people lose motivation.</li><li><strong>Blame culture</strong> — problems are hidden instead of surfaced; no psychological safety at the Gemba.</li><li><strong>Improvements not measured / not visible</strong> — no feedback, no recognition.</li><li><strong>Treating CIP as a one-off project</strong> rather than a continuous, everyday habit.</li></ul>",
+  rubric:[
+    "Management/resource barrier (no time, no commitment)",
+    "Human barrier: fear/resistance to change, job worries",
+    "Missing standardisation (gains slide back) or blame culture",
+    "Lack of measurement/visibility, or treating CIP as one-off"
+  ]
+},
+
+/* ================= UNIT 4 — PROCESS ORIENTATION ================= */
+{
+  unit:"UNIT 04 · Process Orientation", unitKey:"04", unitName:"Process Orientation", topic:"Push vs Pull",
+  type:"mcq", diff:"basic",
+  prompt:"Which statement best captures <strong>pull</strong> production (Kanban)?",
+  promptText:"Which statement best captures pull production (Kanban)?",
+  options:[
+    "Each station produces to a central forecast and pushes output downstream",
+    "Nothing is produced until the downstream customer signals need: 'no card, no production'",
+    "The largest possible batches are made to maximise machine utilisation",
+    "Material is moved only once per week regardless of demand"
+  ],
+  answer:1,
+  explain:"<p><strong>Pull</strong> means a step only produces when the <strong>downstream</strong> customer withdraws material and sends a signal (a <strong>Kanban</strong> card). The rule is <strong>'no card, no production'</strong>. Push, by contrast, makes to a central plan/forecast and shoves inventory downstream, causing overproduction.</p>"
+},
+{
+  unit:"UNIT 04 · Process Orientation", unitKey:"04", unitName:"Process Orientation", topic:"Takt vs Throughput",
+  type:"mcq", diff:"intermediate",
+  prompt:"How do <strong>takt time</strong> and <strong>throughput time</strong> differ?",
+  promptText:"Difference between takt time and throughput time.",
+  options:[
+    "Takt time is the total time to make one unit start-to-finish; throughput is the customer rhythm",
+    "Takt time is the customer-demand rhythm; throughput time is the total time a unit spends flowing through (≈ sum of takt times)",
+    "They are identical",
+    "Takt time only applies to Kanban; throughput only to push"
+  ],
+  answer:1,
+  explain:"<p><strong>Takt time</strong> = the rhythm of customer demand (available time ÷ demand); it synchronises the factory to the customer. <strong>Throughput time</strong> = the total time a unit spends moving through the process (≈ the sum of takt times across the steps). You size stations <em>to the takt</em>.</p>"
+},
+{
+  unit:"UNIT 04 · Process Orientation", unitKey:"04", unitName:"Process Orientation", topic:"SMED",
+  type:"mcq", diff:"intermediate",
+  prompt:"The core idea of <strong>SMED</strong> (Single-Minute Exchange of Die) is to…",
+  promptText:"Core idea of SMED.",
+  options:[
+    "Increase batch sizes so setups happen less often",
+    "Convert internal setup (machine stopped) into external setup (done while running), then streamline",
+    "Replace all dies with identical ones",
+    "Run the machine at single-minute cycle times"
+  ],
+  answer:1,
+  explain:"<p><strong>SMED</strong> (Shingo, 1985) shortens changeover so small batches become economical. The central move is to convert <strong>internal setup</strong> (only possible while the machine is stopped) into <strong>external setup</strong> (prepared while the machine still runs), then simplify and standardise. Faster setups → smaller batches → better flow and less inventory.</p>"
+},
+{
+  unit:"UNIT 04 · Process Orientation", unitKey:"04", unitName:"Process Orientation", topic:"Tech vs Process",
+  type:"written", diff:"intermediate",
+  prompt:"Explain the differences between <strong>technology-oriented</strong> and <strong>process-oriented</strong> production (consider inventory, throughput time, layout, defect risk). <span style='color:var(--steel)'>(Lecturer mock question)</span>",
+  promptText:"Differences between technology-oriented and process-oriented production.",
+  model:"<p><strong>Technology-oriented (workshop / functional) production:</strong> machines grouped by <em>type</em> (all lathes together, all mills together). Parts travel in <strong>batches</strong> between departments. Result: <strong>high inventory (WIP), long throughput times</strong>, lots of transport, and defects are discovered <em>late</em> (whole batches can be bad).</p><p><strong>Process-oriented (flow) production:</strong> machines arranged along the <strong>value stream</strong> in process sequence, often a <strong>U-layout</strong> cell aiming at <strong>one-piece-flow</strong>. Result: <strong>low inventory, short throughput time</strong>, little transport, and <strong>defects surface immediately</strong> (next step sees them at once), enabling quick correction.</p><p>Process orientation is the practical heart of 'flow' and directly supports JIT/pull.</p>",
+  rubric:[
+    "Technology-oriented = machines grouped by type; batch transfer",
+    "→ high inventory, long throughput, late defect detection",
+    "Process-oriented = arranged along value stream / U-layout / one-piece-flow",
+    "→ low inventory, short throughput, immediate defect detection"
+  ]
+},
+{
+  unit:"UNIT 04 · Process Orientation", unitKey:"04", unitName:"Process Orientation", topic:"Heijunka",
+  type:"mcq", diff:"advanced",
+  prompt:"What does <strong>Heijunka</strong> achieve, and why is it a prerequisite for stable pull?",
+  promptText:"What Heijunka achieves and why it enables stable pull.",
+  options:[
+    "It maximises batch size to reduce setups",
+    "It levels and smooths production (volume + mix) so demand on upstream loops is even, removing Mura",
+    "It is another name for Kanban cards",
+    "It stops the line automatically on any defect"
+  ],
+  answer:1,
+  explain:"<p><strong>Heijunka</strong> = production <strong>levelling and smoothing</strong> of both <em>volume</em> and <em>mix</em>. By spreading variants evenly instead of running big blocks, it removes <strong>Mura (unevenness)</strong>, so Kanban/pull loops and supermarkets see steady demand and don't oscillate. For high-mix cases the <strong>EFEI</strong> ('every part every interval') idea applies.</p>"
+},
+
+/* ================= UNIT 5 — GLOBAL / SCM ================= */
+{
+  unit:"UNIT 05 · Global / SCM", unitKey:"05", unitName:"Global Production & SCM", topic:"SCOR",
+  type:"mcq", diff:"basic",
+  prompt:"The <strong>SCOR</strong> model structures a supply chain into which five processes?",
+  promptText:"The five SCOR processes.",
+  options:[
+    "Plan, Source, Make, Deliver, Return",
+    "Plan, Buy, Build, Ship, Bill",
+    "Design, Source, Assemble, Sell, Support",
+    "Sort, Set, Shine, Standardize, Sustain"
+  ],
+  answer:0,
+  explain:"<p><strong>SCOR</strong> (Supply-Chain-Operations-Reference) = <strong>Plan · Source · Make · Deliver · Return</strong>. (The last option is 5S — a distractor.)</p>"
+},
+{
+  unit:"UNIT 05 · Global / SCM", unitKey:"05", unitName:"Global Production & SCM", topic:"Bullwhip",
+  type:"mcq", diff:"intermediate",
+  prompt:"The <strong>bullwhip effect</strong> describes…",
+  promptText:"What the bullwhip effect describes.",
+  options:[
+    "Demand variability shrinking as you move upstream",
+    "Small changes in end-customer demand being amplified into ever-larger swings upstream in the supply chain",
+    "A method for levelling production",
+    "The cost of tooling changeovers"
+  ],
+  answer:1,
+  explain:"<p>The <strong>bullwhip effect</strong> is the <strong>amplification of demand variability upstream</strong>: each tier reacts to local orders and safety stock, so small end-demand changes become large swings for suppliers. Better information sharing and levelling reduce it.</p>"
+},
+{
+  unit:"UNIT 05 · Global / SCM", unitKey:"05", unitName:"Global Production & SCM", topic:"Germany vs Asia",
+  type:"written", diff:"advanced",
+  prompt:"For one industry, compare the <strong>reasons to produce in Germany</strong> versus <strong>relocating to Asia</strong>, and give your recommendation. <span style='color:var(--steel)'>(Lecturer mock question)</span>",
+  promptText:"Compare producing in Germany vs relocating to Asia for one industry; give a recommendation.",
+  model:"<p><em>Pick an industry, e.g. premium automotive components.</em></p><p><strong>For Germany:</strong> highly skilled engineers, strong quality and process know-how, proximity to R&D and customers, protection of IP, short/robust supply lines, 'Made in Germany' reputation.</p><p><strong>For relocating to Asia:</strong> much lower <strong>labour cost</strong> (Germany's labour cost is roughly <strong>~20× that of China</strong> in the lecture's figures), access to fast-growing <strong>new markets</strong>, proximity to local customers and suppliers, lower some regulatory costs.</p><p><strong>Against relocating:</strong> quality/IP risk, longer lead times, bullwhip/logistics exposure, coordination overhead.</p><p><strong>Recommendation (justified):</strong> e.g. keep high-value, IP-sensitive, low-labour-content and R&D-linked production in Germany; relocate labour-intensive, market-serving volume production to Asia — i.e. decide by <em>labour content, IP sensitivity and market proximity</em>, not by cost alone.</p>",
+  rubric:[
+    "Names a specific industry",
+    "Germany reasons: skills, quality, R&D proximity, IP, reputation",
+    "Asia reasons: labour cost (~20× cheaper) + new markets/market proximity",
+    "Clear, justified recommendation (split by labour content / IP / market)"
+  ]
+},
+{
+  unit:"UNIT 05 · Global / SCM", unitKey:"05", unitName:"Global Production & SCM", topic:"Sourcing",
+  type:"written", diff:"intermediate",
+  prompt:"Compare the sourcing strategies <strong>global vs local</strong> and <strong>single vs multiple</strong> sourcing. <span style='color:var(--steel)'>(Lecturer mock question)</span>",
+  promptText:"Compare global vs local and single vs multiple sourcing.",
+  model:"<p><strong>Global sourcing:</strong> buy worldwide — lowest price, wide supplier base, access to specialised capability; but long lead times, higher logistics/bullwhip risk, currency and quality risk.</p><p><strong>Local sourcing:</strong> buy nearby — short lead times, easy communication, supports JIT/JIS, lower logistics risk; but potentially higher price and smaller supplier pool.</p><p><strong>Single sourcing:</strong> one supplier per part — deep partnership, better prices via volume, consistent quality, simpler coordination; but high <strong>dependency / supply risk</strong> if that supplier fails.</p><p><strong>Multiple sourcing:</strong> several suppliers per part — competition on price, security of supply, resilience; but weaker partnership, more coordination, less volume leverage each.</p><p>The four dimensions combine (e.g. local + single for JIT partners; global + multiple for commodities).</p>",
+  rubric:[
+    "Global vs local: price/choice vs lead time/logistics & JIT support",
+    "Single sourcing: partnership/price vs dependency risk",
+    "Multiple sourcing: competition/security vs coordination overhead",
+    "Notes the dimensions combine / a sensible pairing example"
+  ]
+},
+
+/* ================= UNIT 6 — TQM ================= */
+{
+  unit:"UNIT 06 · TQM", unitKey:"06", unitName:"Total Quality Mgmt", topic:"8D",
+  type:"mcq", diff:"basic",
+  prompt:"An <strong>8D report</strong> is primarily used for…",
+  promptText:"Primary use of an 8D report.",
+  options:[
+    "Scheduling preventive maintenance",
+    "Structured customer-complaint / problem handling in 8 disciplines",
+    "Calculating overall equipment effectiveness",
+    "Mapping the value stream"
+  ],
+  answer:1,
+  explain:"<p>The <strong>8D report</strong> (8 disciplines) is a structured team method for <strong>handling complaints / solving problems</strong>: from forming the team and containing the issue to root-cause, corrective and preventive actions, and closure. Common in the automotive supply chain.</p>"
+},
+{
+  unit:"UNIT 06 · TQM", unitKey:"06", unitName:"Total Quality Mgmt", topic:"Balanced Scorecard",
+  type:"mcq", diff:"intermediate",
+  prompt:"The <strong>Balanced Scorecard</strong> views performance through which four perspectives?",
+  promptText:"The four Balanced Scorecard perspectives.",
+  options:[
+    "Financial, Customer, Internal Process, Learning/Employee",
+    "Plan, Source, Make, Deliver",
+    "Man, Machine, Material, Method",
+    "Sort, Set, Shine, Sustain"
+  ],
+  answer:0,
+  explain:"<p>The <strong>Balanced Scorecard</strong> balances four perspectives: <strong>Financial, Customer, Internal Process, and Learning &amp; Growth (Employee)</strong> — so a company isn't steered by financials alone.</p>"
+},
+{
+  unit:"UNIT 06 · TQM", unitKey:"06", unitName:"Total Quality Mgmt", topic:"Realising TQM",
+  type:"written", diff:"intermediate",
+  prompt:"Which <strong>tools/methods</strong> realize <strong>Total Quality Management (TQM)</strong>? <span style='color:var(--steel)'>(Lecturer mock question)</span>",
+  promptText:"Tools/methods that realise TQM.",
+  model:"<p>TQM is an organisation-wide effort built on <strong>customer, employee and process orientation</strong>. It is realised through methods such as:</p><ul><li><strong>8D report</strong> for complaint / problem handling.</li><li><strong>PPAP</strong> and <strong>ISO-TS 16949</strong> (automotive quality standard) for approval and system quality.</li><li><strong>EFQM</strong> excellence model for self-assessment.</li><li><strong>Balanced Scorecard</strong> (4 perspectives) to steer beyond financials.</li><li>Core CIP quality tools: <strong>Ishikawa (6M), Pareto, 5-Why</strong>, and <strong>Poka Yoke / Jidoka</strong> to prevent and catch defects.</li></ul><p>Introduced top-down with management commitment, training, and a no-blame culture.</p>",
+  rubric:[
+    "States TQM = customer/employee/process orientation, organisation-wide",
+    "Names quality standards/models (8D, PPAP, ISO-TS 16949, EFQM, Balanced Scorecard)",
+    "Includes prevention/analysis tools (Ishikawa/Pareto/5-Why/Poka Yoke)",
+    "Notes management commitment / culture for introduction"
+  ]
+},
+
+/* ================= UNIT 7 — LCA / JIDOKA ================= */
+{
+  unit:"UNIT 07 · LCA / Jidoka", unitKey:"07", unitName:"LCA & Jidoka", topic:"Jidoka",
+  type:"mcq", diff:"basic",
+  prompt:"<strong>Jidoka</strong> (autonomation) means…",
+  promptText:"Meaning of Jidoka (autonomation).",
+  options:[
+    "Running machines as fast as possible regardless of quality",
+    "Giving a machine/process the ability to detect a defect and stop automatically, so bad parts aren't passed on",
+    "Automating only the office processes",
+    "Producing to a central forecast"
+  ],
+  answer:1,
+  explain:"<p><strong>Jidoka</strong> = <strong>autonomation</strong> ('automation with a human touch', Toyoda Sakichi, 1924). The machine <strong>stops automatically on a defect</strong> so it doesn't produce scrap and a person can fix the root cause. It also frees the operator from watching the machine (one worker → several machines).</p>"
+},
+{
+  unit:"UNIT 07 · LCA / Jidoka", unitKey:"07", unitName:"LCA & Jidoka", topic:"Poka Yoke",
+  type:"mcq", diff:"intermediate",
+  prompt:"What is the difference between <strong>hard</strong> and <strong>soft</strong> Poka Yoke?",
+  promptText:"Difference between hard and soft Poka Yoke.",
+  options:[
+    "Hard = warns the operator; Soft = physically prevents the error",
+    "Hard = makes the error physically impossible; Soft = warns/signals so the error is caught",
+    "Hard = for metals; Soft = for plastics",
+    "There is no difference"
+  ],
+  answer:1,
+  explain:"<p><strong>Poka Yoke</strong> = mistake-proofing. <strong>Hard</strong> Poka Yoke makes the error <strong>physically impossible</strong> (e.g. a connector that only fits one way, like a USB slot shaped so it can't go in wrong). <strong>Soft</strong> Poka Yoke <strong>warns or signals</strong> (light/beep) so the mistake is noticed and caught.</p>"
+},
+{
+  unit:"UNIT 07 · LCA / Jidoka", unitKey:"07", unitName:"LCA & Jidoka", topic:"LCA principles",
+  type:"written", diff:"intermediate",
+  prompt:"What is <strong>Low Cost Automation (LCA)</strong> and what principles guide it? Mention <strong>Chaku-Chaku</strong> and <strong>Andon</strong>.",
+  promptText:"What LCA is, its guiding principles, plus Chaku-Chaku and Andon.",
+  model:"<p><strong>Low Cost Automation (LCA)</strong> automates using <strong>simple, cheap, modular</strong> means rather than expensive complex robots — e.g. gravity/slide chutes, standardised profile systems (<strong>Creform</strong>), and simple mechanisms. The idea: get most of the benefit of automation at a fraction of the cost and with more flexibility.</p><p><strong>Chaku-Chaku</strong> ('load-load'): a U-shaped cell where the operator only <em>loads</em> parts and the machines auto-eject/unload — capturing the principle <em>'a hand is no feeding device'</em> (people shouldn't waste motion just feeding machines).</p><p><strong>Andon</strong>: a <strong>light-signal board</strong> that shows line/station status (normal/needs help/stopped) so problems are visible instantly and help arrives fast — the visual partner of Jidoka.</p>",
+  rubric:[
+    "LCA = simple / cheap / modular automation (gravity, Creform)",
+    "Rationale: most benefit at low cost + flexibility",
+    "Chaku-Chaku = load-load U-cell; 'a hand is no feeding device'",
+    "Andon = light-signal status board making problems visible"
+  ]
+},
+
+/* ================= UNIT 8 — TPM (calc heavy) ================= */
+{
+  unit:"UNIT 08 · TPM", unitKey:"08", unitName:"Total Productive Maint.", topic:"OEE formula",
+  type:"mcq", diff:"basic",
+  prompt:"<strong>OEE</strong> (Overall Equipment Effectiveness) is calculated as…",
+  promptText:"How OEE is calculated.",
+  options:[
+    "A + P + Q (sum of the three)",
+    "A × P × Q (Availability × Performance × Quality)",
+    "MTBF ÷ MTTR",
+    "Good parts ÷ planned time"
+  ],
+  answer:1,
+  explain:"<p><strong>OEE = A × P × Q</strong> — Availability × Performance × Quality (all as ratios). Because they multiply, a weak factor drags the whole score down.</p>"
+},
+{
+  unit:"UNIT 08 · TPM", unitKey:"08", unitName:"Total Productive Maint.", topic:"MTBF/MTTR",
+  type:"mcq", diff:"intermediate",
+  prompt:"Availability from mean times is <strong>A = MTBF / (MTBF + MTTR)</strong>. What do MTBF and MTTR mean?",
+  promptText:"Meaning of MTBF and MTTR.",
+  options:[
+    "MTBF = Mean Time To Repair; MTTR = Mean Time Between Failures",
+    "MTBF = Mean Time Between Failures (reliability, longer better); MTTR = Mean Time To Repair (maintainability, shorter better)",
+    "Both measure quality of parts",
+    "MTBF is a cost; MTTR is a revenue"
+  ],
+  answer:1,
+  explain:"<p><strong>MTBF = Mean Time Between Failures</strong> (a <em>reliability</em> measure — longer is better). <strong>MTTR = Mean Time To Repair</strong> (a <em>maintainability</em> measure — shorter is better). Availability rises when MTBF grows and MTTR shrinks.</p>"
+},
+{
+  unit:"UNIT 08 · TPM", unitKey:"08", unitName:"Total Productive Maint.", topic:"Availability",
+  type:"calc", diff:"intermediate",
+  prompt:"Compute the <strong>Availability (A)</strong> for the shift below. Give your answer in <strong>percent</strong>.",
+  promptText:"Compute Availability A from the given shift data (percent).",
+  given:"<ul><li>2 shifts × 6 h = 12 h of attendance</li><li>Planned breaks: 60 min → deducted from planned time</li><li>Planned Production Time = <strong>660 min</strong></li><li>5 malfunctions × 6 min = 30 min unplanned downtime</li></ul>",
+  answer:95.45, tol:0.3, placeholder:"95.45", answerText:"A = 95.45 %",
+  worked:"Planned Production Time = 12 h − 60 min breaks = 720 − 60 = 660 min\nActual Production Time = 660 − 30 min downtime = 630 min\n\nA = Actual / Planned = 630 / 660 = 0.9545 = 95.45 %\n\nTrap: planned breaks REDUCE planned time (they are not availability losses).\nOnly the 30 min of unplanned malfunctions count against Availability."
+},
+{
+  unit:"UNIT 08 · TPM", unitKey:"08", unitName:"Total Productive Maint.", topic:"Performance",
+  type:"calc", diff:"intermediate",
+  prompt:"Compute the <strong>Performance (P)</strong>. Give your answer in <strong>percent</strong>.",
+  promptText:"Compute Performance P (percent).",
+  given:"<ul><li>Planned cycle rate = 10 parts/min</li><li>Actual Production Time = 630 min → theoretical output = 6300 parts</li><li>Actual output = 6000 parts</li></ul>",
+  answer:95.24, tol:0.3, placeholder:"95.24", answerText:"P = 95.24 %",
+  worked:"Theoretical output = 10 parts/min × 630 min = 6300 parts\nActual output = 6000 parts\n\nP = Actual / Theoretical = 6000 / 6300 = 0.9524 = 95.24 %"
+},
+{
+  unit:"UNIT 08 · TPM", unitKey:"08", unitName:"Total Productive Maint.", topic:"Quality",
+  type:"calc", diff:"basic",
+  prompt:"Compute the <strong>Quality rate (Q)</strong>. Give your answer in <strong>percent</strong>.",
+  promptText:"Compute Quality rate Q (percent).",
+  given:"<ul><li>Actual parts produced = 6000</li><li>Bad parts = 500 → good parts = 5500</li></ul>",
+  answer:91.67, tol:0.3, placeholder:"91.67", answerText:"Q = 91.67 %",
+  worked:"Good parts = 6000 − 500 = 5500\n\nQ = Good / Actual = 5500 / 6000 = 0.9167 = 91.67 %"
+},
+{
+  unit:"UNIT 08 · TPM", unitKey:"08", unitName:"Total Productive Maint.", topic:"OEE full",
+  type:"calc", diff:"advanced",
+  prompt:"Using A = 95.45 %, P = 95.24 %, Q = 91.67 %, compute the <strong>OEE</strong>. Give your answer in <strong>percent</strong>. <span style='color:var(--steel)'>(Case Study 3)</span>",
+  promptText:"Compute OEE from A=95.45%, P=95.24%, Q=91.67% (percent).",
+  given:"<ul><li>A = 95.45 %</li><li>P = 95.24 %</li><li>Q = 91.67 %</li></ul>",
+  answer:83.33, tol:0.5, placeholder:"83.33", answerText:"OEE = 83.33 %",
+  worked:"OEE = A × P × Q\n     = 0.9545 × 0.9524 × 0.9167\n     = 0.8333\n     = 83.33 %\n\nNote how three individually 'good' rates (~90–95%) multiply down to ~83%.\nThat is the whole point of OEE — losses stack multiplicatively."
+},
+{
+  unit:"UNIT 08 · TPM", unitKey:"08", unitName:"Total Productive Maint.", topic:"8 pillars",
+  type:"written", diff:"advanced",
+  prompt:"Name the <strong>8 pillars of TPM</strong> and briefly explain <strong>Autonomous Maintenance</strong>, <strong>Planned Maintenance</strong> and <strong>Quality Maintenance</strong>.",
+  promptText:"Name the 8 pillars of TPM; explain Autonomous, Planned and Quality Maintenance.",
+  model:"<p><strong>The 8 pillars:</strong> 1) Autonomous Maintenance, 2) Focused Improvement (Kobetsu Kaizen), 3) Planned Maintenance, 4) Quality Maintenance, 5) Early Equipment / Initial-Phase Management, 6) Education &amp; Training, 7) Office TPM, 8) Safety, Health &amp; Environment.</p><p><strong>Autonomous Maintenance:</strong> operators perform basic care — cleaning, lubricating, inspection — giving them <strong>ownership</strong> of their equipment and catching problems early (implemented in 7 steps).</p><p><strong>Planned Maintenance:</strong> maintenance staff schedule servicing to reach <strong>'zero defect' / zero breakdown</strong>, ideally done when equipment is <em>not scheduled for production</em>.</p><p><strong>Quality Maintenance:</strong> targets <strong>quality defects at their root source</strong>, using a QM-matrix that links process steps to quality requirements so the equipment reliably produces good parts.</p>",
+  rubric:[
+    "Names all/most of the 8 pillars",
+    "Autonomous Maintenance = operator basic care → ownership",
+    "Planned Maintenance = scheduled by maintenance staff toward zero breakdown, off-production",
+    "Quality Maintenance = defects at root source (QM-matrix)"
+  ]
+},
+
+/* ================= UNIT 9 — ENERGY ================= */
+{
+  unit:"UNIT 09 · Energy", unitKey:"09", unitName:"Energy Efficiency", topic:"EVSM",
+  type:"mcq", diff:"basic",
+  prompt:"<strong>Energy Value Stream Mapping (EVSM)</strong> is best described as…",
+  promptText:"Best description of Energy Value Stream Mapping.",
+  options:[
+    "A financial statement analysis method",
+    "An extension of Value Stream Mapping that integrates process energy (base load vs processing load) into the value stream",
+    "A Kanban card system for energy",
+    "A maintenance schedule"
+  ],
+  answer:1,
+  explain:"<p><strong>EVSM</strong> extends the classic <strong>Value Stream Method</strong> by adding <strong>energy per process step</strong> — separating <strong>base load</strong> (consumed even when idle) from <strong>processing load</strong> — so energy waste becomes visible alongside material and time waste.</p>"
+},
+{
+  unit:"UNIT 09 · Energy", unitKey:"09", unitName:"Energy Efficiency", topic:"ISO 50001 & CO₂",
+  type:"mcq", diff:"intermediate",
+  prompt:"Which is correct about energy figures used in the course?",
+  promptText:"Correct statement about ISO 50001 and CO₂ per kWh.",
+  options:[
+    "DIN EN ISO 9001 is the energy standard; Germany and France have identical CO₂/kWh",
+    "DIN EN ISO 50001 is the energy-management standard; Germany ≈ 525–600 g CO₂/kWh while France ≈ 25–100 g CO₂/kWh (nuclear-heavy grid)",
+    "ISO 50001 sets the OEE threshold; CO₂ is irrelevant",
+    "France emits far more CO₂ per kWh than Germany"
+  ],
+  answer:1,
+  explain:"<p><strong>DIN EN ISO 50001</strong> is the <strong>energy-management standard</strong>. On the grid mix: <strong>Germany ≈ 525–600 g CO₂/kWh</strong> vs <strong>France ≈ 25–100 g CO₂/kWh</strong> — France is far lower because its grid is <strong>nuclear-heavy</strong>. Same kWh saved therefore saves very different CO₂ depending on the country.</p>"
+},
+{
+  unit:"UNIT 09 · Energy", unitKey:"09", unitName:"Energy Efficiency", topic:"Base load",
+  type:"written", diff:"intermediate",
+  prompt:"Define <strong>Energy Value Stream Mapping</strong>, name the reference standard, and explain the saving potential in the <strong>base load</strong>. <span style='color:var(--steel)'>(Case Study 2)</span>",
+  promptText:"Define EVSM, name the reference standard, explain base-load saving potential.",
+  model:"<p><strong>EVSM</strong> is an extension of the Value Stream Method that integrates <strong>process energy</strong> into the value-stream picture — mapping energy consumed per step and separating <strong>base load vs processing load</strong>.</p><p><strong>Reference standard:</strong> <strong>DIN EN ISO 50001</strong>, the energy-management standard underpinning a continuous improvement process focused on energy efficiency.</p><p><strong>Base-load saving potential:</strong> the <strong>base load</strong> is energy consumed <em>even when not producing</em> (machines in standby, idle running). It is a big, cheap saving lever: <strong>switch equipment off during breaks/idle</strong> instead of leaving it in standby. Savings are quantified in <strong>kWh, € and CO₂</strong>, and can justify investment in more efficient machinery.</p>",
+  rubric:[
+    "EVSM = VSM extension integrating process energy (base vs processing load)",
+    "Names DIN EN ISO 50001",
+    "Base load = energy used even when not producing (standby/idle)",
+    "Saving = switch off during idle; quantify in kWh/€/CO₂"
+  ]
+},
+
+/* ================= UNITS 10–12 — INFO / DEV / ADMIN ================= */
+{
+  unit:"UNIT 11 · Lean Development", unitKey:"11", unitName:"Lean Development", topic:"Early phases",
+  type:"mcq", diff:"intermediate",
+  prompt:"Why does Lean Development stress the <strong>early design phases</strong> so heavily?",
+  promptText:"Why lean development stresses early design phases.",
+  options:[
+    "Because early phases are the cheapest to skip",
+    "Because roughly 70% of later problems (and locked-in cost) originate in the early design phases",
+    "Because design has no effect on production",
+    "Because suppliers should only be involved at the very end"
+  ],
+  answer:1,
+  explain:"<p>About <strong>70% of problems originate in the early phases</strong>, and most product cost is <strong>locked in</strong> during design. So lean development front-loads effort (concurrent engineering, <strong>early supplier involvement</strong>) to prevent expensive downstream changes.</p>"
+},
+{
+  unit:"UNIT 12 · Lean Administration", unitKey:"12", unitName:"Lean Administration", topic:"Makigami vs VSM",
+  type:"mcq", diff:"basic",
+  prompt:"Which tool is used to visualise <strong>administrative</strong> processes (rather than production flow)?",
+  promptText:"Which tool visualises administrative processes.",
+  options:[
+    "Value Stream Mapping (VSM)",
+    "Makigami / Process Mapping",
+    "OEE",
+    "SMED"
+  ],
+  answer:1,
+  explain:"<p><strong>Makigami</strong> (process mapping) is the administration counterpart to <strong>VSM</strong>: VSM maps production value streams, Makigami maps <strong>office/admin processes</strong> to expose waste in information flow, hand-offs and waiting.</p>"
+},
+{
+  unit:"UNIT 12 · Lean Administration", unitKey:"12", unitName:"Lean Administration", topic:"5S",
+  type:"written", diff:"basic",
+  prompt:"List the <strong>5S</strong> and explain, in a few steps, how you would implement 5S in your own office or lab. <span style='color:var(--steel)'>(Lecturer mock question)</span>",
+  promptText:"List the 5S and explain how to implement them in an office/lab.",
+  model:"<p><strong>The 5S:</strong></p><ol><li><strong>Sort (Seiri):</strong> remove everything not needed from the workspace — unused tools, old files.</li><li><strong>Set in order (Seiton):</strong> a place for everything and everything in its place; label and arrange by frequency of use ('a place for everything…').</li><li><strong>Shine (Seiso):</strong> clean the area and equipment; cleaning doubles as inspection.</li><li><strong>Standardize (Seiketsu):</strong> make the first 3S a documented standard (photos, checklists) so it's repeatable.</li><li><strong>Sustain (Shitsuke):</strong> keep it up through discipline, audits and habit.</li></ol><p><em>Office/lab implementation:</em> Sort desk + drawers + shared folders (bin/archive unused items); Set order with labelled trays and a clear digital folder structure; Shine with a weekly tidy; Standardize with a one-page desk/lab standard; Sustain with a short recurring audit.</p>",
+  rubric:[
+    "Lists all five: Sort, Set in order, Shine, Standardize, Sustain",
+    "Correct meaning of each S",
+    "Applies them concretely to an office/lab (physical + digital)",
+    "Notes Sustain needs discipline/audits to hold"
+  ]
+},
+
+/* ================= CASE STUDY CALCS ================= */
+{
+  unit:"CASE 3 · Process Capability", unitKey:"C3", unitName:"Cp / Cpk (Case 3)", topic:"Cp",
+  type:"calc", diff:"advanced",
+  prompt:"Compute the process-capability index <strong>Cp</strong> for the data below. <span style='color:var(--steel)'>(Case Study 3)</span>",
+  promptText:"Compute Cp from μ, σ, USL, LSL.",
+  given:"<ul><li>Mean μ = 3</li><li>Standard deviation σ = 0.707</li><li>USL = 4, LSL = 2</li></ul>",
+  answer:0.471, tol:0.01, placeholder:"0.471", answerText:"Cp = 0.471",
+  worked:"Cp = (USL − LSL) / (6σ)\n   = (4 − 2) / (6 × 0.707)\n   = 2 / 4.242\n   = 0.471\n\nCp measures whether the spread COULD fit inside the tolerance\nif the process were perfectly centred."
+},
+{
+  unit:"CASE 3 · Process Capability", unitKey:"C3", unitName:"Cp / Cpk (Case 3)", topic:"Cpk",
+  type:"calc", diff:"advanced",
+  prompt:"Compute <strong>Cpk</strong> for the same data. <span style='color:var(--steel)'>(Case Study 3)</span>",
+  promptText:"Compute Cpk from μ, σ, USL, LSL.",
+  given:"<ul><li>Mean μ = 3</li><li>Standard deviation σ = 0.707</li><li>USL = 4, LSL = 2</li></ul>",
+  answer:0.471, tol:0.01, placeholder:"0.471", answerText:"Cpk = 0.471",
+  worked:"Cpk = min[ (USL − μ)/(3σ) , (μ − LSL)/(3σ) ]\n    = min[ (4 − 3)/(3×0.707) , (3 − 2)/(3×0.707) ]\n    = min[ 1/2.121 , 1/2.121 ]\n    = min[ 0.471 , 0.471 ]\n    = 0.471\n\nCpk accounts for OFF-CENTRING. Here the process is perfectly centred\n(μ is exactly mid-tolerance), so Cpk = Cp."
+},
+{
+  unit:"CASE 3 · Process Capability", unitKey:"C3", unitName:"Cp / Cpk (Case 3)", topic:"Capability rule",
+  type:"mcq", diff:"intermediate",
+  prompt:"With Cp = Cpk = 0.471, is the process <strong>capable</strong>?",
+  promptText:"Is a process with Cp=Cpk=0.471 capable?",
+  options:[
+    "Yes — any positive value is capable",
+    "No — the process is capable only if Cp and Cpk exceed ~1.33; 0.471 is far below",
+    "Yes — because Cp equals Cpk",
+    "Cannot be determined without the OEE"
+  ],
+  answer:1,
+  explain:"<p>The usual capability threshold is <strong>Cp and Cpk &gt; 1.33</strong> (values of 1, 1.3 or 2 are also used depending on the spec). Since <strong>0.471 &lt; 1.33</strong>, the process is <strong>not capable</strong> — its spread is too wide for the tolerance. (Because Cpk = Cp, it is perfectly <em>centred</em>, just too <em>variable</em>.)</p>"
+},
+{
+  unit:"CASE 3 · Process Capability", unitKey:"C3", unitName:"Cp / Cpk (Case 3)", topic:"Interpretation",
+  type:"written", diff:"intermediate",
+  prompt:"Explain what <strong>Cp</strong> and <strong>Cpk</strong> each measure, and what it means when <strong>Cpk &lt; Cp</strong>.",
+  promptText:"What Cp and Cpk measure, and the meaning of Cpk < Cp.",
+  model:"<p><strong>Cp</strong> = ratio of the <em>allowed</em> scattering to the <em>actual</em> scattering: it tells you whether the process spread <em>could</em> fit inside the tolerance <strong>if it were perfectly centred</strong>. It ignores where the mean sits.</p><p><strong>Cpk</strong> = the same idea but <strong>accounting for off-centring</strong> — it uses the distance from the mean to the <em>nearest</em> spec limit. So Cpk penalises a process whose mean has drifted toward one limit.</p><p><strong>If Cpk &lt; Cp</strong>, the process is <strong>off-centre</strong>: it has the potential to be capable (Cp) but the mean is shifted, wasting part of the tolerance on one side. If <strong>Cpk = Cp</strong>, it's perfectly centred. Either index <strong>&lt; 1.33</strong> ⇒ not capable.</p>",
+  rubric:[
+    "Cp = allowed vs actual spread, assumes perfect centring",
+    "Cpk = accounts for off-centring (distance to nearest limit)",
+    "Cpk < Cp ⇒ process off-centre; Cpk = Cp ⇒ centred",
+    "Either < 1.33 ⇒ not capable"
+  ]
+},
+{
+  unit:"CASE 1 · Financials", unitKey:"C1", unitName:"Income Statement (Case 1)", topic:"Gross margin",
+  type:"calc", diff:"basic",
+  prompt:"Compute the <strong>gross-profit margin</strong>. Give your answer in <strong>percent</strong>. <span style='color:var(--steel)'>(Case Study 1)</span>",
+  promptText:"Compute gross-profit margin (percent) from net sales and gross profit.",
+  given:"<ul><li>Net Sales = 500 (money units)</li><li>Cost of Goods Sold (COGS) = 350</li><li>Gross Profit = Net Sales − COGS = 150</li></ul>",
+  answer:30, tol:0.5, placeholder:"30", answerText:"Gross-profit margin = 30 %",
+  worked:"Gross Profit = Net Sales − COGS = 500 − 350 = 150\n\nGross-profit margin = Gross Profit / Net Sales\n                    = 150 / 500\n                    = 0.30 = 30 %\n\nIn Case 1 you track how this margin improves as process orientation\nlowers the COGS ratio and SG&A falls as a % of sales."
+},
+{
+  unit:"CASE 1 · Financials", unitKey:"C1", unitName:"Income Statement (Case 1)", topic:"Reading the statement",
+  type:"written", diff:"intermediate",
+  prompt:"In Case 1, how do <strong>process/lean improvements</strong> show up in an income statement over time (2006–2012)? Name the lines you would watch.",
+  promptText:"How do lean improvements show up in an income statement; which lines to watch.",
+  model:"<p>Watch these lines: <strong>Net Sales, COGS, Gross Profit &amp; Gross-Profit Margin, SG&amp;A (% of sales), R&amp;D, and EBIT.</strong></p><p>As <strong>process orientation</strong> improves: shorter throughput and lower inventory reduce the <strong>COGS ratio</strong>, so <strong>gross-profit margin rises</strong>. As the company scales efficiently, <strong>SG&amp;A as a % of sales falls</strong>. Together these drive the swing from <strong>negative EBIT to positive EBIT</strong> — the financial signature of the lean/process improvements taking hold.</p>",
+  rubric:[
+    "Names key lines (Net Sales, COGS, Gross Profit/Margin, SG&A%, EBIT)",
+    "Process orientation → lower COGS ratio → higher gross margin",
+    "SG&A as % of sales falls as company scales",
+    "Result: EBIT swings from negative to positive"
+  ]
+}
+
+];
+
+</script>
+<script>
+/* ============================================================
+   IPS Exam Trainer — app logic
+   ============================================================ */
+(function(){
+"use strict";
+
+/* ---- tiny helpers ---- */
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+
+/* ---- safe local storage (works on GitHub Pages; degrades quietly elsewhere) ---- */
+const store={
+  get(k){try{const v=localStorage.getItem(k);return v?JSON.parse(v):null;}catch(e){return null;}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}},
+  del(k){try{localStorage.removeItem(k);}catch(e){}}
+};
+
+const BANK = window.IPS_QUESTIONS || [];
+$('#qcount').textContent = BANK.length;
+
+/* ---- config state ---- */
+const cfg={mode:'mixed',diff:'all',len:10};
+function wireChips(container,key){
+  $$('.chip',$(container)).forEach(c=>{
+    c.addEventListener('click',()=>{
+      $$('.chip',$(container)).forEach(x=>x.setAttribute('aria-pressed','false'));
+      c.setAttribute('aria-pressed','true');
+      const map={'#modeOpts':'mode','#diffOpts':'diff','#lenOpts':'len'};
+      let v=c.dataset.mode||c.dataset.diff||c.dataset.len;
+      if(container==='#lenOpts')v=parseInt(v,10);
+      cfg[map[container]]=v;
+    });
+  });
+}
+wireChips('#modeOpts');wireChips('#diffOpts');wireChips('#lenOpts');
+
+/* ---- build a run ---- */
+let run=null;
+function buildRun(){
+  let pool=BANK.slice();
+  if(cfg.mode==='calc')pool=pool.filter(q=>q.type==='calc');
+  else if(cfg.mode==='mcq')pool=pool.filter(q=>q.type==='mcq');
+  else if(cfg.mode==='written')pool=pool.filter(q=>q.type==='written');
+  if(cfg.diff!=='all')pool=pool.filter(q=>q.diff===cfg.diff);
+  pool=shuffle(pool);
+  if(cfg.len&&cfg.len>0)pool=pool.slice(0,cfg.len);
+  if(pool.length===0)return null;
+  return {items:pool,i:0,results:pool.map(()=>null),answers:pool.map(()=>'')};
+}
+
+/* ---- screens ---- */
+function show(id){['#screen-start','#screen-exam','#screen-results'].forEach(s=>$(s).classList.add('hidden'));$(id).classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});}
+
+/* ---- render one question ---- */
+function renderQuestion(){
+  const q=run.items[run.i];
+  const n=run.items.length;
+  $('#progFill').style.width=((run.i)/n*100)+'%';
+  $('#progLabel').textContent=String(run.i+1).padStart(2,'0')+' / '+String(n).padStart(2,'0');
+  $('#qUnitLabel').textContent=q.unit;
+  $('#qScore').textContent=q.diff.toUpperCase();
+
+  const typeBadge={written:'<span class="badge type">written</span>',calc:'<span class="badge calc">calculation</span>',mcq:'<span class="badge mcq">multiple choice</span>'}[q.type];
+
+  let body=`<div class="qmeta">${typeBadge}<span class="badge">${esc(q.topic||'')}</span></div>`;
+  body+=`<div class="qprompt">${q.prompt}</div>`;
+  if(q.given){body+=`<div class="given"><div class="gtitle">Given</div>${q.given}</div>`;}
+
+  if(q.type==='mcq'){
+    body+=`<div class="mcq-list" id="mcqList">`;
+    q.options.forEach((o,idx)=>{
+      body+=`<button class="mcq-opt" data-idx="${idx}" aria-pressed="false"><span class="key">${String.fromCharCode(65+idx)}</span><span>${esc(o)}</span></button>`;
+    });
+    body+=`</div>`;
+  }else if(q.type==='calc'){
+    body+=`<input class="numin" id="numAnswer" placeholder="Your answer (number, e.g. ${q.placeholder||'83.33'})" inputmode="decimal">`;
+  }else{
+    body+=`<textarea class="answer" id="txtAnswer" placeholder="Write your full answer here. Use the course vocabulary — the rubric rewards exact terms."></textarea>`;
+  }
+
+  body+=`<div class="exam-actions" id="actionRow">
+      <button class="btn" id="submitBtn">Submit answer</button>
+      <div class="spacer"></div>
+      <button class="btn ghost sm" id="skipBtn">Skip</button>
+    </div>`;
+  body+=`<div id="revealSlot"></div>`;
+  $('#qBody').innerHTML=body;
+
+  // restore prior answer if navigating
+  if(q.type==='mcq'){
+    $$('#mcqList .mcq-opt').forEach(b=>b.addEventListener('click',()=>{
+      $$('#mcqList .mcq-opt').forEach(x=>x.setAttribute('aria-pressed','false'));
+      b.setAttribute('aria-pressed','true');
+      run.answers[run.i]=parseInt(b.dataset.idx,10);
+    }));
+  }
+  $('#submitBtn').addEventListener('click',submitAnswer);
+  $('#skipBtn').addEventListener('click',()=>{run.results[run.i]='miss';next();});
+}
+
+/* ---- submit / reveal ---- */
+function submitAnswer(){
+  const q=run.items[run.i];
+  if(q.type==='mcq'){
+    const sel=run.answers[run.i];
+    if(sel===''||sel===undefined||sel===null){flash('Pick an option first');return;}
+    revealMCQ(q,sel);
+  }else if(q.type==='calc'){
+    const raw=$('#numAnswer').value.trim();
+    if(raw===''){flash('Enter a number first');return;}
+    run.answers[run.i]=raw;
+    revealCalc(q,raw);
+  }else{
+    const txt=$('#txtAnswer').value.trim();
+    run.answers[run.i]=txt;
+    revealWritten(q,txt);
+  }
+}
+function flash(msg){
+  const b=$('#submitBtn');const old=b.textContent;b.textContent=msg;b.style.background='var(--stop)';
+  setTimeout(()=>{b.textContent=old;b.style.background='';},1200);
+}
+function lockInput(){
+  $('#submitBtn')&&$('#submitBtn').remove();
+  $('#skipBtn')&&$('#skipBtn').remove();
+  $$('#mcqList .mcq-opt').forEach(b=>b.style.pointerEvents='none');
+  const t=$('#txtAnswer');if(t)t.setAttribute('readonly','');
+  const nn=$('#numAnswer');if(nn)nn.setAttribute('readonly','');
+}
+function continueBtn(){
+  const last=run.i===run.items.length-1;
+  const slot=$('#revealSlot');
+  const bar=document.createElement('div');
+  bar.className='exam-actions';
+  bar.innerHTML=`<div class="spacer"></div><button class="btn steel" id="contBtn">${last?'See results →':'Next question →'}</button>`;
+  slot.appendChild(bar);
+  $('#contBtn').addEventListener('click',next);
+}
+
+function revealMCQ(q,sel){
+  lockInput();
+  $$('#mcqList .mcq-opt').forEach((b,idx)=>{
+    if(idx===q.answer)b.classList.add('correct');
+    else if(idx===sel)b.classList.add('wrong');
+  });
+  run.results[run.i]= sel===q.answer?'got':'miss';
+  const ok=sel===q.answer;
+  $('#revealSlot').innerHTML=`<div class="reveal">
+    <h4><span class="andon-mini" style="width:9px;height:9px;border-radius:50%;background:${ok?'var(--go)':'var(--stop)'}"></span>${ok?'Correct':'Not quite'}</h4>
+    <div class="model">${q.explain||''}</div></div>`;
+  continueBtn();
+}
+
+function revealCalc(q,raw){
+  lockInput();
+  const val=parseFloat(raw.replace(',','.').replace('%',''));
+  const tol=q.tol!=null?q.tol:Math.max(Math.abs(q.answer)*0.01,0.01);
+  const ok=isFinite(val)&&Math.abs(val-q.answer)<=tol;
+  run.results[run.i]=ok?'got':'miss';
+  $('#revealSlot').innerHTML=`<div class="reveal">
+    <h4><span style="width:9px;height:9px;border-radius:50%;display:inline-block;background:${ok?'var(--go)':'var(--stop)'}"></span>${ok?'Correct':'Check your working'}</h4>
+    <div class="worked"><span class="answer-line">Answer: ${q.answerText||q.answer}</span>\n\n${esc(q.worked)}</div>
+  </div>`;
+  continueBtn();
+}
+
+function revealWritten(q,txt){
+  lockInput();
+  let html=`<div class="reveal">
+    <h4>Model answer</h4>
+    <div class="model">${q.model}</div>`;
+  if(q.rubric&&q.rubric.length){
+    html+=`<h4 style="margin-top:18px">Rubric · the marker looks for</h4><ul class="rubric">`;
+    q.rubric.forEach(r=>{html+=`<li><span class="mark"></span><span>${esc(r)}</span></li>`;});
+    html+=`</ul>`;
+  }
+  // self-grade
+  html+=`<div class="selfgrade"><div class="sg-q">Score yourself honestly against the rubric</div>
+    <div class="sg-btns">
+      <button class="sg got" data-v="got" aria-pressed="false"><span class="dot"></span>Got it</button>
+      <button class="sg part" data-v="part" aria-pressed="false"><span class="dot"></span>Partial</button>
+      <button class="sg miss" data-v="miss" aria-pressed="false"><span class="dot"></span>Missed it</button>
+    </div>`;
+  // AI grading option
+  const key=store.get('ips_ai_key');
+  if(key){
+    html+=`<div style="margin-top:16px"><button class="btn ghost sm" id="aiGradeBtn">⚙ Grade with AI instead</button></div>
+      <div class="ai-box hidden" id="aiBox"><div class="aihd">Claude · automated grade</div><div class="aibody" id="aiBody">Grading…</div></div>`;
+  }
+  html+=`</div></div>`;
+  $('#revealSlot').innerHTML=html;
+
+  $$('.sg').forEach(b=>b.addEventListener('click',()=>{
+    $$('.sg').forEach(x=>x.setAttribute('aria-pressed','false'));
+    b.setAttribute('aria-pressed','true');
+    run.results[run.i]=b.dataset.v;
+    if(!$('#contBtn'))continueBtn();
+  }));
+  if(key){$('#aiGradeBtn').addEventListener('click',()=>gradeWithAI(q,txt));}
+  continueBtn();
+}
+
+/* ---- optional AI grading (browser -> Anthropic API, user key) ---- */
+async function gradeWithAI(q,answer){
+  const key=store.get('ips_ai_key');
+  const box=$('#aiBox');const body=$('#aiBody');
+  box.classList.remove('hidden');body.textContent='Grading…';
+  if(!answer||answer.length<2){body.textContent='Write an answer first, then grade.';return;}
+  const sys=`You are a strict but fair examiner for a university course "Integrated Production Systems" (Lean Production / Toyota Production System). Grade the student's answer against the model answer and rubric. Reply in this exact format:\nSCORE: X/10\nHIT: (rubric points they covered)\nMISSED: (rubric points they missed)\nTIP: (one concrete improvement). Keep it under 120 words. Reward exact course vocabulary.`;
+  const user=`QUESTION:\n${q.promptText||q.prompt.replace(/<[^>]+>/g,'')}\n\nMODEL ANSWER:\n${q.model.replace(/<[^>]+>/g,'')}\n\nRUBRIC:\n- ${(q.rubric||[]).join('\n- ')}\n\nSTUDENT ANSWER:\n${answer}`;
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'content-type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:400,system:sys,messages:[{role:'user',content:user}]})
+    });
+    if(!res.ok){const t=await res.text();body.textContent='Could not grade ('+res.status+'). Self-grade instead. '+(res.status===401?'Check your API key.':'');return;}
+    const data=await res.json();
+    const text=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('\n').trim();
+    body.innerHTML=text.replace(/SCORE:\s*(\d+(?:\.\d+)?)\s*\/\s*10/i,'<span class="ai-score">SCORE: $1/10</span>');
+    const m=text.match(/SCORE:\s*(\d+(?:\.\d+)?)/i);
+    if(m){const s=parseFloat(m[1]);run.results[run.i]= s>=8?'got':s>=5?'part':'miss';
+      $$('.sg').forEach(x=>x.setAttribute('aria-pressed','false'));}
+  }catch(e){body.textContent='Network error — self-grade instead. (Direct browser calls can be blocked; that is fine, the self-grade works offline.)';}
+}
+
+/* ---- navigation ---- */
+function next(){
+  if(run.results[run.i]===null)run.results[run.i]='miss';
+  if(run.i<run.items.length-1){run.i++;renderQuestion();window.scrollTo({top:0,behavior:'smooth'});}
+  else finish();
+}
+
+/* ---- finish + results ---- */
+function scoreValue(r){return r==='got'?1:r==='part'?0.5:0;}
+function finish(){
+  const n=run.items.length;
+  const pts=run.results.reduce((a,r)=>a+scoreValue(r),0);
+  const pct=Math.round(pts/n*100);
+  $('#progFill').style.width='100%';
+
+  $('#resScore').textContent=pct+'%';
+  $('#resTag').textContent=cfg.mode.toUpperCase()+' · '+n+' Q';
+  let verdict;
+  if(pct>=80)verdict='Line is running green. You are exam-ready across most of what you tested — keep the weak cells warm with a quick review.';
+  else if(pct>=55)verdict='Solid progress. Focus your next runs on the amber and red cells below before moving on.';
+  else verdict='Early days — that is exactly what practice is for. Work the red cells with the study notes, then run again.';
+  $('#resVerdict').textContent=verdict;
+  $('#resScore').style.color=pct>=80?'var(--go)':pct>=55?'var(--warn)':'var(--stop)';
+
+  // andon board by unit
+  const byUnit={};
+  run.items.forEach((q,idx)=>{
+    const u=q.unitKey||q.unit;
+    if(!byUnit[u])byUnit[u]={name:q.unitName||q.unit,pts:0,n:0,label:q.unit};
+    byUnit[u].pts+=scoreValue(run.results[idx]);byUnit[u].n++;
+  });
+  let board='';
+  Object.keys(byUnit).sort().forEach(u=>{
+    const d=byUnit[u];const p=d.pts/d.n;
+    const cls=p>=0.8?'go':p>=0.5?'warn':'stop';
+    board+=`<div class="andon-cell ${cls}"><div class="u">${esc(d.label)}</div><div class="name">${esc(d.name)}</div><div class="lamp"></div></div>`;
+  });
+  $('#andonBoard').innerHTML=board;
+
+  // review list
+  let rev='';
+  run.items.forEach((q,idx)=>{
+    const r=run.results[idx];
+    const color=r==='got'?'var(--go)':r==='part'?'var(--warn)':'var(--stop)';
+    const ptxt=q.promptText||q.prompt.replace(/<[^>]+>/g,'');
+    let detail='';
+    if(q.type==='mcq'){detail=`<strong>Correct:</strong> ${esc(q.options[q.answer])}<br><br>${q.explain||''}`;}
+    else if(q.type==='calc'){detail=`<div class="worked"><span class="answer-line">Answer: ${q.answerText||q.answer}</span>\n\n${esc(q.worked)}</div>`;}
+    else{detail=`<div class="model">${q.model}</div>`;}
+    rev+=`<div class="review-item"><div class="rhd"><span class="rlamp" style="background:${color}"></span><span class="rq">${esc(ptxt)}</span><span class="badge">${q.type}</span></div><div class="rbody">${detail}</div></div>`;
+  });
+  $('#reviewList').innerHTML=rev;
+  $$('.review-item .rhd').forEach(h=>h.addEventListener('click',()=>h.parentElement.classList.toggle('open')));
+
+  // save session
+  const hist=store.get('ips_history')||[];
+  hist.unshift({date:Date.now(),mode:cfg.mode,n:n,pct:pct});
+  store.set('ips_history',hist.slice(0,20));
+  updateStatusLamp(pct);
+
+  show('#screen-results');
+}
+function updateStatusLamp(pct){
+  const l=$('#statusLamp');
+  l.style.background=pct>=80?'var(--go)':pct>=55?'var(--warn)':'var(--stop)';
+  l.style.boxShadow='0 0 0 3px '+(pct>=80?'var(--go-soft)':pct>=55?'var(--warn-soft)':'var(--stop-soft)');
+}
+
+/* ---- last-run panel on home ---- */
+function renderLastRun(){
+  const hist=store.get('ips_history');
+  if(!hist||!hist.length){$('#lastRunPanel').hidden=true;return;}
+  const last=hist[0];
+  $('#lastRunPanel').hidden=false;
+  $('#lastRunTag').textContent=new Date(last.date).toLocaleDateString();
+  const avg=Math.round(hist.reduce((a,h)=>a+h.pct,0)/hist.length);
+  $('#lastRunBody').innerHTML=`<div style="display:flex;gap:26px;flex-wrap:wrap;font-size:13.5px">
+    <div><div style="font-family:'Space Grotesk';font-size:30px;font-weight:700;color:${last.pct>=80?'var(--go)':last.pct>=55?'var(--warn)':'var(--stop)'}">${last.pct}%</div><div class="mono" style="font-size:11px;color:var(--ink-soft);letter-spacing:.1em;text-transform:uppercase">last run · ${esc(last.mode)}</div></div>
+    <div><div style="font-family:'Space Grotesk';font-size:30px;font-weight:700">${avg}%</div><div class="mono" style="font-size:11px;color:var(--ink-soft);letter-spacing:.1em;text-transform:uppercase">avg of ${hist.length} runs</div></div>
+  </div>`;
+}
+
+/* ---- buttons ---- */
+$('#startBtn').addEventListener('click',()=>{
+  run=buildRun();
+  if(!run){alert('No questions match that combination — try "All levels" or a different mode.');return;}
+  renderQuestion();show('#screen-exam');
+});
+$('#quitBtn').addEventListener('click',()=>{if(confirm('Quit this run? Progress will be lost.'))show('#screen-start');});
+$('#againBtn').addEventListener('click',()=>{run=buildRun();renderQuestion();show('#screen-exam');});
+$('#homeBtn').addEventListener('click',()=>{renderLastRun();show('#screen-start');});
+
+/* ---- AI key modal ---- */
+$('#aiSetupBtn').addEventListener('click',()=>{const k=store.get('ips_ai_key');if(k)$('#keyInput').value=k;$('#aiModal').classList.remove('hidden');});
+$('#closeModal').addEventListener('click',()=>$('#aiModal').classList.add('hidden'));
+$('#saveKey').addEventListener('click',()=>{const v=$('#keyInput').value.trim();if(v)store.set('ips_ai_key',v);$('#aiModal').classList.add('hidden');});
+$('#clearKey').addEventListener('click',()=>{store.del('ips_ai_key');$('#keyInput').value='';$('#aiModal').classList.add('hidden');});
+
+/* ---- init ---- */
+renderLastRun();
+})();
+</script>
+</body>
+</html>
