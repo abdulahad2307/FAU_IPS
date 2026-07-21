@@ -15,7 +15,7 @@ A free, self-contained mock-exam trainer for **Integrated Production Systems (IP
 
 **Just open `index.html`** in any browser (double-click it). That's it — it works offline.
 
-To share it with friends, you have two easy options.
+To use it two easy options.
 
 ---
 
@@ -35,7 +35,7 @@ Everyone's scores are saved **locally in their own browser**, so you don't share
 
 ## Option B — Everyone runs it locally
 
-Your friends download the repo (green **Code** button → **Download ZIP**), unzip it, and
+Anyone can download the repo (green **Code** button → **Download ZIP**), unzip it, and
 double-click **`index.html`**. Works offline, nothing to install.
 
 ---
